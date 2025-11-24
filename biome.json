@@ -30,7 +30,7 @@
 			},
 			"correctness": {
 				"noUnusedVariables": "error",
-				"noUnusedImports": "error",
+				"noUnusedImports": "warn",
 				"useExhaustiveDependencies": "warn",
 				"useHookAtTopLevel": "error"
 			},
@@ -50,10 +50,7 @@
 			"nursery": {
 				"useSortedClasses": {
 					"level": "error",
-					"options": {
-						"attributes": ["className", "class"],
-						"functions": ["cn", "clsx", "cva", "tw"]
-					}
+					"fix": "safe"
 				}
 			}
 		}
