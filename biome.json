@@ -45,7 +45,8 @@
 			"suspicious": {
 				"noExplicitAny": "warn",
 				"noArrayIndexKey": "off",
-				"noConfusingVoidType": "error"
+				"noConfusingVoidType": "error",
+				"noUnknownAtRules": "warn"
 			},
 			"nursery": {
 				"useSortedClasses": {

@@ -1,0 +1,40 @@
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { Text, TouchableOpacity, View } from "react-native";
+import type { Supply } from "@/supplies-mock";
+
+interface SupplyItemProps {
+	item: Supply;
+	onEdit: (item: Supply) => void;
+	onRemove: (item: Supply) => void;
+}
+
+export function SupplyItem({ item, onEdit, onRemove }: SupplyItemProps) {
+	return (
+		<View className="mb-4 rounded-lg border border-gray-300 bg-white p-4 shadow">
+			<View className="flex flex-row items-center">
+				<Text className="text-xl">{item.name}</Text>
+				<Text className="ml-auto text-green-900">${item.price.toFixed(2)}</Text>
+			</View>
+
+			<Text className="mt-2 ml-auto text-text-secondary">{item.quantity} unidades</Text>
+
+			<View className="mt-4 flex flex-row items-center justify-center gap-6">
+				<TouchableOpacity
+					className="flex-row items-center gap-2 px-3 py-1"
+					onPress={() => onEdit(item)}
+				>
+					<MaterialCommunityIcons name="pencil" size={14} color="black" />
+					<Text>Editar</Text>
+				</TouchableOpacity>
+
+				<TouchableOpacity
+					className="flex-row items-center gap-2 px-3 py-1"
+					onPress={() => onRemove(item)}
+				>
+					<MaterialCommunityIcons name="delete" size={14} color="black" />
+					<Text>Remover</Text>
+				</TouchableOpacity>
+			</View>
+		</View>
+	);
+}
