@@ -1,4 +1,4 @@
-import { renderWithProviders } from "@/utils/test.render-with.provider";
+import { renderWithProviders } from "@/utils/render-with-providers";
 import { LoadingScreen } from "..";
 
 test("componente renderizado corretamente", () => {

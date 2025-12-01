@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { type Supply, suppliesMock } from "@/supplies-mock";
+import { dateToIso, isoToDate } from "@/utils/date";
 
 function fetchSupplies(): Promise<Supply[]> {
 	return new Promise((resolve) => {
@@ -19,7 +20,7 @@ export function useHome() {
 	const [formData, setFormData] = useState({
 		name: "",
 		quantity: "",
-		price: "",
+		validity: "",
 	});
 
 	useEffect(() => {
@@ -34,7 +35,7 @@ export function useHome() {
 		setFormData({
 			name: item.name,
 			quantity: item.quantity.toString(),
-			price: item.price.toString(),
+			validity: isoToDate(item.validity),
 		});
 		setEditModalVisible(true);
 	};
@@ -49,7 +50,7 @@ export function useHome() {
 							...supply,
 							name: formData.name,
 							quantity: Number.parseInt(formData.quantity, 10),
-							price: Number.parseFloat(formData.price),
+							validity: dateToIso(formData.validity),
 						}
 					: supply,
 			),
@@ -62,11 +63,11 @@ export function useHome() {
 	const handleCloseEditModal = () => {
 		setEditModalVisible(false);
 		setEditingItem(null);
-		setFormData({ name: "", quantity: "", price: "" });
+		setFormData({ name: "", quantity: "", validity: "" });
 	};
 
 	const handleOpenAddModal = () => {
-		setFormData({ name: "", quantity: "", price: "" });
+		setFormData({ name: "", quantity: "", validity: "" });
 		setAddModalVisible(true);
 	};
 
@@ -75,7 +76,7 @@ export function useHome() {
 			id: Math.max(...supplies.map((s) => s.id)) + 1,
 			name: formData.name,
 			quantity: Number.parseInt(formData.quantity, 10),
-			price: Number.parseFloat(formData.price),
+			validity: dateToIso(formData.validity),
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString(),
 		};
@@ -83,12 +84,12 @@ export function useHome() {
 		setSupplies((prev) => [...prev, newSupply]);
 		setAddModalVisible(false);
 		Alert.alert("Sucesso", `${formData.name} foi adicionado com sucesso`);
-		setFormData({ name: "", quantity: "", price: "" });
+		setFormData({ name: "", quantity: "", validity: "" });
 	};
 
 	const handleCloseAddModal = () => {
 		setAddModalVisible(false);
-		setFormData({ name: "", quantity: "", price: "" });
+		setFormData({ name: "", quantity: "", validity: "" });
 	};
 
 	const handleRemove = (item: Supply) => {
