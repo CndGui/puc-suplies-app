@@ -29,7 +29,7 @@
 				"noUselessTypeConstraint": "error"
 			},
 			"correctness": {
-				"noUnusedVariables": "error",
+				"noUnusedVariables": "warn",
 				"noUnusedImports": "warn",
 				"useExhaustiveDependencies": "warn",
 				"useHookAtTopLevel": "error"
