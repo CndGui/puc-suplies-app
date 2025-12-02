@@ -1,132 +1,130 @@
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { type Supply, suppliesMock } from "@/supplies-mock";
+import { Supply } from "@/interfaces/supply";
+import { SupplyService } from "@/database/supplyService";
 import { dateToIso, isoToDate } from "@/utils/date";
 
-function fetchSupplies(): Promise<Supply[]> {
-	return new Promise((resolve) => {
-		setTimeout(() => {
-			resolve(suppliesMock);
-		}, 2000);
-	});
-}
-
 export function useHome() {
-	const [supplies, setSupplies] = useState<Supply[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [editModalVisible, setEditModalVisible] = useState(false);
-	const [addModalVisible, setAddModalVisible] = useState(false);
-	const [editingItem, setEditingItem] = useState<Supply | null>(null);
-	const [formData, setFormData] = useState({
-		name: "",
-		quantity: "",
-		validity: "",
-	});
+  const [supplies, setSupplies] = useState<Supply[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [editingItem, setEditingItem] = useState<Supply | null>(null);
 
-	useEffect(() => {
-		fetchSupplies().then((data) => {
-			setSupplies(data);
-			setIsLoading(false);
-		});
-	}, []);
+  const [formData, setFormData] = useState({
+    name: "",
+    quantity: "",
+    validity: "",
+  });
 
-	const handleEdit = (item: Supply) => {
-		setEditingItem(item);
-		setFormData({
-			name: item.name,
-			quantity: item.quantity.toString(),
-			validity: isoToDate(item.validity),
-		});
-		setEditModalVisible(true);
-	};
+  // 🔥 Carrega dados reais do SQLite
+  useEffect(() => {
+    loadSupplies();
+  }, []);
 
-	const handleSaveEdit = () => {
-		if (!editingItem) return;
+  async function loadSupplies() {
+    try {
+      setIsLoading(true);
+      const data = await SupplyService.getAll();
+      setSupplies(data);
+    } catch (err) {
+      console.log("Erro ao carregar supplies:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
-		setSupplies((prev) =>
-			prev.map((supply) =>
-				supply.id === editingItem.id
-					? {
-							...supply,
-							name: formData.name,
-							quantity: Number.parseInt(formData.quantity, 10),
-							validity: dateToIso(formData.validity),
-						}
-					: supply,
-			),
-		);
+  // 📝 Editar item
+  const handleEdit = (item: Supply) => {
+    setEditingItem(item);
+    setFormData({
+      name: item.name,
+      quantity: item.quantity.toString(),
+      validity: isoToDate(item.validity),
+    });
+    setEditModalVisible(true);
+  };
 
-		setEditModalVisible(false);
-		Alert.alert("Sucesso", `${formData.name} foi editado com sucesso`);
-	};
+  // 💾 Salvar edição
+  const handleSaveEdit = async () => {
+    if (!editingItem) return;
 
-	const handleCloseEditModal = () => {
-		setEditModalVisible(false);
-		setEditingItem(null);
-		setFormData({ name: "", quantity: "", validity: "" });
-	};
+    await SupplyService.update(editingItem.id, {
+      name: formData.name,
+      quantity: Number(formData.quantity),
+      validity: dateToIso(formData.validity),
+    });
 
-	const handleOpenAddModal = () => {
-		setFormData({ name: "", quantity: "", validity: "" });
-		setAddModalVisible(true);
-	};
+    await loadSupplies();
+    setEditModalVisible(false);
 
-	const handleSaveAdd = () => {
-		const newSupply: Supply = {
-			id: Math.max(...supplies.map((s) => s.id)) + 1,
-			name: formData.name,
-			quantity: Number.parseInt(formData.quantity, 10),
-			validity: dateToIso(formData.validity),
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString(),
-		};
+    Alert.alert("Sucesso", `${formData.name} foi atualizado!`);
+  };
 
-		setSupplies((prev) => [...prev, newSupply]);
-		setAddModalVisible(false);
-		Alert.alert("Sucesso", `${formData.name} foi adicionado com sucesso`);
-		setFormData({ name: "", quantity: "", validity: "" });
-	};
+  const handleCloseEditModal = () => {
+    setEditModalVisible(false);
+    setEditingItem(null);
+    setFormData({ name: "", quantity: "", validity: "" });
+  };
 
-	const handleCloseAddModal = () => {
-		setAddModalVisible(false);
-		setFormData({ name: "", quantity: "", validity: "" });
-	};
+  // ➕ Abrir modal de adicionar
+  const handleOpenAddModal = () => {
+    setFormData({ name: "", quantity: "", validity: "" });
+    setAddModalVisible(true);
+  };
 
-	const handleRemove = (item: Supply) => {
-		Alert.alert(
-			"Remover Insúmo",
-			`Tem certeza que deseja remover ${item.name}?`,
-			[
-				{
-					text: "Cancelar",
-					style: "cancel",
-				},
-				{
-					text: "Remover",
-					style: "destructive",
-					onPress: () => {
-						setSupplies((prev) => prev.filter((supply) => supply.id !== item.id));
-						Alert.alert("Sucesso", `${item.name} foi removido com sucesso`);
-					},
-				},
-			],
-			{ cancelable: true },
-		);
-	};
+  // 💾 Criar novo item
+  const handleSaveAdd = async () => {
+    await SupplyService.create({
+      name: formData.name,
+      quantity: Number(formData.quantity),
+      validity: dateToIso(formData.validity),
+    });
 
-	return {
-		supplies,
-		isLoading,
-		editModalVisible,
-		addModalVisible,
-		formData,
-		setFormData,
-		handleEdit,
-		handleSaveEdit,
-		handleCloseEditModal,
-		handleOpenAddModal,
-		handleSaveAdd,
-		handleCloseAddModal,
-		handleRemove,
-	};
+    await loadSupplies();
+    setAddModalVisible(false);
+
+    Alert.alert("Sucesso", `${formData.name} foi adicionado!`);
+  };
+
+  const handleCloseAddModal = () => {
+    setAddModalVisible(false);
+    setFormData({ name: "", quantity: "", validity: "" });
+  };
+
+  // 🗑 Remover item
+  const handleRemove = (item: Supply) => {
+    Alert.alert(
+      "Remover Insumo",
+      `Deseja realmente remover ${item.name}?`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Remover",
+          style: "destructive",
+          onPress: async () => {
+            await SupplyService.delete(item.id);
+            await loadSupplies();
+            Alert.alert("Sucesso", `${item.name} foi removido!`);
+          },
+        },
+      ]
+    );
+  };
+
+  return {
+    supplies,
+    isLoading,
+    editModalVisible,
+    addModalVisible,
+    formData,
+    setFormData,
+    handleEdit,
+    handleSaveEdit,
+    handleCloseEditModal,
+    handleOpenAddModal,
+    handleSaveAdd,
+    handleCloseAddModal,
+    handleRemove,
+  };
 }
