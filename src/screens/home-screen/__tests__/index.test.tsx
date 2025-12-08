@@ -7,17 +7,17 @@ const mockHomeState = {
 			id: 1,
 			name: "Insumo A",
 			quantity: 1,
-			validity: new Date().toISOString(),
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString(),
+			validity: new Date("2026-01-01").toISOString().split("T")[0],
+			createdAt: new Date().toISOString().split("T")[0],
+			updatedAt: new Date().toISOString().split("T")[0],
 		},
 		{
 			id: 2,
 			name: "Insumo B",
 			quantity: 20,
-			validity: new Date().toISOString(),
-			createdAt: new Date().toISOString(),
-			updatedAt: new Date().toISOString(),
+			validity: new Date("2022-01-01").toISOString().split("T")[0],
+			createdAt: new Date().toISOString().split("T")[0],
+			updatedAt: new Date().toISOString().split("T")[0],
 		},
 	],
 	isLoading: false,
@@ -61,5 +61,17 @@ describe("Home Screen", () => {
 
 		expect(supplyItemA).toBeTruthy();
 		expect(supplyItemB).toBeTruthy();
+	});
+
+	test("deve exibir aviso de estoque baixo para o insumo com quantidade menor ou igual a 2", () => {
+		const { getByText } = renderWithProviders(<HomeScreen {...mockHomeState} />);
+
+		expect(getByText("Estoque baixo!")).toBeTruthy();
+	});
+
+	test("deve exibir aviso de validade expirada para o insumo com validade menor que a data atual", () => {
+		const { getByText } = renderWithProviders(<HomeScreen {...mockHomeState} />);
+
+		expect(getByText("Validade expirada!")).toBeTruthy();
 	});
 });
