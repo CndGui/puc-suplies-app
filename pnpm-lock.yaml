@@ -35,6 +35,9 @@ importers:
       expo-splash-screen:
         specifier: ~31.0.11
         version: 31.0.11(expo@54.0.25)
+      expo-sqlite:
+        specifier: ~16.0.9
+        version: 16.0.9(expo@54.0.25)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       expo-status-bar:
         specifier: ~3.0.8
         version: 3.0.8(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -1584,6 +1587,9 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
+  await-lock@2.2.2:
+    resolution: {integrity: sha512-aDczADvlvTGajTDjcjpJMqRkOF6Qdz3YbPZm/PyW6tKPkx2hlYBzxMhEywM/tU72HrVZjgl5VCdRuMlA7pZ8Gw==}
+
   babel-jest@29.7.0:
     resolution: {integrity: sha512-BrvGY3xZSwEcCzKvKsCi2GgHqDqsYkOP4/by5xCgIwGXQxIEh+8ew3gmrE1y7XRR6LHZIj6yLYnUi/mm2KXKBg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -2264,6 +2270,13 @@ packages:
     resolution: {integrity: sha512-D7MQflYn/PAN3+fACSyxHO4oxZMBezllbgFdVY8roAS1gXpCy8SS6LrGHTD0VpOPEp3X4Gn7evTnXSI9nFoI5Q==}
     peerDependencies:
       expo: '*'
+
+  expo-sqlite@16.0.9:
+    resolution: {integrity: sha512-pMT52pTko539yZZQUZYfGiAYxQvpTUZIp/dwi2+IidSjPWB2wJi96ByaoNAzxmucarsYZN1F46C1Le6eT2VLkA==}
+    peerDependencies:
+      expo: '*'
+      react: '*'
+      react-native: '*'
 
   expo-status-bar@3.0.8:
     resolution: {integrity: sha512-L248XKPhum7tvREoS1VfE0H6dPCaGtoUWzRsUv7hGKdiB4cus33Rc0sxkWkoQ77wE8stlnUlL5lvmT0oqZ3ZBw==}
@@ -6443,6 +6456,8 @@ snapshots:
 
   asynckit@0.4.0: {}
 
+  await-lock@2.2.2: {}
+
   babel-jest@29.7.0(@babel/core@7.28.5):
     dependencies:
       '@babel/core': 7.28.5
@@ -7155,6 +7170,13 @@ snapshots:
       expo: 54.0.25(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(expo-router@6.0.15)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
     transitivePeerDependencies:
       - supports-color
+
+  expo-sqlite@16.0.9(expo@54.0.25)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0):
+    dependencies:
+      await-lock: 2.2.2
+      expo: 54.0.25(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(expo-router@6.0.15)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      react: 19.1.0
+      react-native: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)
 
   expo-status-bar@3.0.8(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0):
     dependencies:
