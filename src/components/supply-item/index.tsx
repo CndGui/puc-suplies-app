@@ -11,11 +11,14 @@ interface SupplyItemProps {
 }
 
 export function SupplyItem({ item, onEdit, onRemove }: SupplyItemProps) {
+	const isLowStock = item.quantity <= 2;
+	const isExpired = new Date(item.validity) < new Date();
+
 	return (
 		<View
 			className={twMerge(
 				"mb-4 rounded-lg border border-gray-300 bg-white p-4 shadow",
-				item.quantity <= 2 ? "border-red-500 bg-red-100" : "",
+				isLowStock || isExpired ? "border-red-500 bg-red-100" : "",
 			)}
 			testID={`supply-item-${item.id}`}
 		>
@@ -45,6 +48,15 @@ export function SupplyItem({ item, onEdit, onRemove }: SupplyItemProps) {
 					<MaterialCommunityIcons name="delete" size={14} color="black" />
 					<Text>Remover</Text>
 				</TouchableOpacity>
+			</View>
+
+			<View className="flex flex-col items-center justify-center">
+				{isLowStock && (
+					<Text className="mt-2 font-semibold text-red-600 text-sm">Estoque baixo!</Text>
+				)}
+				{isExpired && (
+					<Text className="mt-2 font-semibold text-red-600 text-sm">Validade expirada!</Text>
+				)}
 			</View>
 		</View>
 	);
